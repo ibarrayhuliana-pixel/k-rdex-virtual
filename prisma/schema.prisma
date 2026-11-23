@@ -1,0 +1,97 @@
+// ============================================================
+// Esquema Prisma - Sistema de Kardex Virtual
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------------
+// Enum: Rol del usuario
+// ------------------------------------------------------------
+enum Rol {
+  DOCENTE
+  PADRE_FAMILIA
+}
+
+// ------------------------------------------------------------
+// User: Docentes (creados solo por seed) y Padres de familia
+// ------------------------------------------------------------
+model User {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  correo    String   @unique
+  password  String   // hash bcrypt
+  rol       Rol
+  materia   String?  // solo para DOCENTE
+  createdAt DateTime @default(now())
+
+  registrosKardex RegistroKardex[] @relation("DocenteRegistros")
+  cursos          Curso[]          @relation("CursoDocente")
+
+  @@map("users")
+}
+
+// ------------------------------------------------------------
+// Curso: Nivel + Paralelo (ej. Sexto de Secundaria "A")
+// ------------------------------------------------------------
+model Curso {
+  id        Int      @id @default(autoincrement())
+  nivel     String   // ej. "Sexto de Secundaria"
+  paralelo  String   // ej. "A"
+  nombre    String   // ej. "6to de Secundaria \"A\""
+  docenteId Int?
+  docente   User?    @relation("CursoDocente", fields: [docenteId], references: [id])
+
+  estudiantes Estudiante[]
+  registros   RegistroKardex[]
+
+  @@unique([nivel, paralelo])
+  @@map("cursos")
+}
+
+// ------------------------------------------------------------
+// Estudiante: vinculado solo a un Curso (sin tutor ni password)
+// ------------------------------------------------------------
+model Estudiante {
+  id            Int      @id @default(autoincrement())
+  numeroLista   Int      // N° de lista
+  nombre        String   // Nombre completo
+  codigo        String?  // CI / código opcional
+  cursoId       Int
+  curso         Curso    @relation(fields: [cursoId], references: [id])
+  activo        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  registros RegistroKardex[]
+
+  @@unique([cursoId, numeroLista])
+  @@map("estudiantes")
+}
+
+// ------------------------------------------------------------
+// RegistroKardex: falta de conducta / pedagógica + asistencia
+// ------------------------------------------------------------
+model RegistroKardex {
+  id              Int      @id @default(autoincrement())
+  fecha           DateTime @db.Date
+  tipo            String   // "CONDUCTA" | "PEDAGOGICA"
+  falta           String   // descripción de la falta
+  asistencia      String   // "PRESENTE" | "ATRASO" | "FSL" | "FCL"
+  observaciones   String?
+  estudianteId    Int
+  estudiante      Estudiante @relation(fields: [estudianteId], references: [id])
+  cursoId         Int
+  curso           Curso    @relation(fields: [cursoId], references: [id])
+  docenteId       Int
+  docente         User     @relation("DocenteRegistros", fields: [docenteId], references: [id])
+  createdAt       DateTime @default(now())
+
+  @@index([estudianteId, fecha])
+  @@map("registros_kardex")
+}

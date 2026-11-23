@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Familias · Kárdex Virtual</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="inner">
+      <div class="brand">
+        <div class="brand-logo">K</div>
+        <div>
+          <div class="name">Unidad Educativa</div>
+          <div class="sub">Gestión Estudiantil</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost" id="btnNotif" title="Notificaciones">🔔</button>
+        <button class="btn btn-logout" id="btnLogout">→ Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+
+    <div style="margin-bottom:18px;">
+      <p class="eyebrow">Portal de Familias</p>
+      <h1>Seguimiento estudiantil</h1>
+      <p class="subtitle">Consulta el historial académico y conductual de tus estudiantes.</p>
+    </div>
+
+    <!-- Selectores en cascada -->
+    <div class="card">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div>
+          <label for="cursoSelect">Seleccionar curso</label>
+          <select id="cursoSelect">
+            <option value="">Cargando cursos...</option>
+          </select>
+        </div>
+        <div>
+          <label for="estudianteSelect">Seleccionar estudiante</label>
+          <select id="estudianteSelect" disabled>
+            <option value="">Primero selecciona un curso</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Resumen -->
+      <div class="stat-grid" id="statGrid" style="margin-top:16px; display:none;">
+        <div class="stat">
+          <div class="lbl">Asistencia</div>
+          <div class="val" id="statAsistencia">—</div>
+        </div>
+        <div class="stat">
+          <div class="lbl">Registros</div>
+          <div class="val" id="statRegistros">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historial de observaciones (solo lectura) -->
+    <div class="card" id="historialCard" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <h2>Historial de observaciones</h2>
+        <span class="tag tag-conducta" style="background:#d4f5dd; color:var(--success);">Solo lectura</span>
+      </div>
+      <p class="subtitle">Ordenado desde el registro más reciente</p>
+
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/padre.js"></script>
+</body>
+</html>

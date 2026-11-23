@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kárdex Virtual · Unidad Educativa Yhuli</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-wrap" style="max-width:480px; padding-top:60px;">
+
+    <div class="card">
+      <p class="eyebrow">Bienvenido</p>
+      <h1>Inicia sesión en tu cuenta</h1>
+      <p class="subtitle">Selecciona tu perfil e ingresa tus credenciales.</p>
+
+      <!-- Selector de rol -->
+      <div class="role-switch" id="roleSwitch">
+        <button type="button" class="active" data-role="DOCENTE">Docente</button>
+        <button type="button" data-role="PADRE_FAMILIA">Padre de familia</button>
+      </div>
+
+      <!-- Formulario de login -->
+      <form id="loginForm">
+        <div style="margin-bottom:14px;">
+          <label for="loginCorreo">Correo electrónico</label>
+          <input type="email" id="loginCorreo" placeholder="nombre@colegio.edu" required />
+        </div>
+        <div style="margin-bottom:14px;">
+          <label for="loginPass">Contraseña</label>
+          <input type="password" id="loginPass" placeholder="••••••••" required />
+        </div>
+        <div style="text-align:right; margin-bottom:14px;">
+          <a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">
+          Ingresar al sistema <span>→</span>
+        </button>
+      </form>
+
+      <!-- Registro (solo padres) -->
+      <div id="registerArea" style="display:none; margin-top:18px;">
+        <hr style="border:none; border-top:1px solid var(--border); margin:18px 0;" />
+        <p style="text-align:center; color:var(--text-soft);">¿Aún no tienes una cuenta?</p>
+        <button type="button" class="btn btn-outline btn-block" id="showRegister">
+          Registrarme como padre de familia
+        </button>
+      </div>
+
+      <!-- Formulario de registro -->
+      <form id="registerForm" style="display:none; margin-top:18px;">
+        <div style="margin-bottom:12px;">
+          <label for="regNombre">Nombre completo</label>
+          <input type="text" id="regNombre" placeholder="Nombre y apellidos" required />
+        </div>
+        <div style="margin-bottom:12px;">
+          <label for="regCorreo">Correo electrónico</label>
+          <input type="email" id="regCorreo" placeholder="nombre@correo.com" required />
+        </div>
+        <div style="margin-bottom:14px;">
+          <label for="regPass">Contraseña</label>
+          <input type="password" id="regPass" placeholder="Mínimo 6 caracteres" minlength="6" required />
+        </div>
+        <button type="submit" class="btn btn-success btn-block btn-lg">
+          Crear cuenta
+        </button>
+        <button type="button" class="btn btn-ghost btn-block" id="cancelRegister" style="margin-top:8px;">
+          Cancelar
+        </button>
+      </form>
+    </div>
+
+    <p style="text-align:center; margin-top:24px; color:var(--text-soft); font-size:0.85rem;">
+      © 2026 Unidad Educativa Yhuli · Kárdex Virtual
+    </p>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

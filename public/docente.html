@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Docente · Kárdex Virtual</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="inner">
+      <div class="brand">
+        <div class="brand-logo">K</div>
+        <div>
+          <div class="name">Unidad Educativa</div>
+          <div class="sub">Gestión Estudiantil</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" id="btnAddCurso">+ Añadir curso</button>
+        <button class="btn btn-primary" id="btnAddEstudiante">+ Añadir estudiante</button>
+        <button class="btn btn-ghost" id="btnNotif" title="Notificaciones">🔔</button>
+        <button class="btn btn-logout" id="btnLogout">→ Cerrar sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-wrap">
+
+    <!-- Selector de curso + búsqueda -->
+    <div class="card">
+      <label for="cursoSelect">Curso</label>
+      <select id="cursoSelect"></select>
+      <div style="margin-top:12px;">
+        <input type="search" id="buscarEstudiante" placeholder="Buscar estudiante..." />
+      </div>
+    </div>
+
+    <!-- Lista de estudiantes -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong style="color:var(--text-soft); text-transform:uppercase; letter-spacing:1px; font-size:0.8rem;">
+          Estudiantes · <span id="countEstudiantes">0</span>
+        </strong>
+      </div>
+      <div class="student-list" id="studentList"></div>
+    </div>
+
+    <!-- Formulario de registro kardex -->
+    <div class="card" id="kardexForm" style="display:none;">
+      <div class="row" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:14px;">
+        <div>
+          <label for="fechaReg">Fecha</label>
+          <input type="date" id="fechaReg" />
+        </div>
+        <div>
+          <label>Docente</label>
+          <input type="text" id="docenteReg" disabled />
+        </div>
+        <div>
+          <label>Materia asignada</label>
+          <input type="text" id="materiaReg" disabled />
+        </div>
+      </div>
+      <p style="font-size:0.82rem; color:var(--text-soft); margin:0 0 14px;">
+        ✓ Datos cargados automáticamente según las credenciales de acceso.
+      </p>
+
+      <!-- Estudiante seleccionado -->
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.25); border-radius:10px; padding:12px 16px; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="student-avatar" id="selAvatar">AV</div>
+          <div>
+            <div style="font-size:0.82rem; color:var(--text-soft);">Estudiante seleccionado</div>
+            <div style="font-weight:700;" id="selNombre">—</div>
+          </div>
+        </div>
+        <button class="btn btn-outline" id="btnEditarEstudiante">✎ Editar información</button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <div class="tab active" data-tab="conducta">
+          Conducta <span class="badge-count">12</span>
+        </div>
+        <div class="tab" data-tab="pedagogica">
+          Pedagógica <span class="badge-count">9</span>
+        </div>
+      </div>
+
+      <!-- Faltas Conducta -->
+      <div class="faltas-grid" id="gridConducta"></div>
+
+      <!-- Faltas Pedagógica -->
+      <div class="faltas-grid" id="gridPedagogica" style="display:none;"></div>
+
+      <!-- Asistencia -->
+      <div style="margin-top:18px;">
+        <label>Asistencia</label>
+        <div class="asistencia-group" id="asistenciaGroup">
+          <button type="button" class="asistencia-btn active" data-val="PRESENTE">Presente</button>
+          <button type="button" class="asistencia-btn" data-val="ATRASO">Atraso (A)</button>
+          <button type="button" class="asistencia-btn" data-val="FSL">F.S.L.</button>
+          <button type="button" class="asistencia-btn" data-val="FCL">F.C.L.</button>
+        </div>
+        <p style="font-size:0.78rem; color:var(--text-soft); margin-top:6px;">
+          F.S.L. = Falta sin licencia · F.C.L. = Falta con licencia
+        </p>
+      </div>
+
+      <!-- Observaciones -->
+      <div style="margin-top:14px;">
+        <label for="obsReg">Observaciones (OBS)</label>
+        <textarea id="obsReg" placeholder="Descripción detallada de la incidencia..."></textarea>
+      </div>
+
+      <!-- Guardar -->
+      <div style="margin-top:18px; display:flex; gap:10px;">
+        <button class="btn btn-success btn-block btn-lg" id="btnGuardar">✓ Guardar registro</button>
+      </div>
+    </div>
+
+    <!-- Historial del estudiante -->
+    <div class="card" id="historialCard" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h2>Historial de seguimiento</h2>
+        <span class="tag tag-pedagogica" id="countRegistros">0 registros</span>
+      </div>
+      <p class="subtitle" id="histSubtitle">Faltas y observaciones registradas</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Falta de conducta</th>
+              <th>Falta pedagógica</th>
+              <th>Asistencia</th>
+              <th>Observaciones</th>
+              <th>Docente</th>
+            </tr>
+          </thead>
+          <tbody id="historialBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Añadir Curso -->
+  <div class="modal-overlay" id="modalCurso">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>Añadir nuevo curso</h2>
+          <p class="subtitle">Crea y asigna un paralelo de secundaria.</p>
+        </div>
+        <button class="modal-close" data-close="modalCurso">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom:12px;">
+          <label for="cursoNivel">Nivel</label>
+          <select id="cursoNivel">
+            <option value="Sexto de Secundaria">Sexto de Secundaria</option>
+          </select>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label for="cursoParalelo">Paralelo</label>
+          <input type="text" id="cursoParalelo" placeholder="Ej. D" maxlength="3" />
+        </div>
+        <div style="margin-bottom:12px;">
+          <label for="cursoDocente">Docente responsable</label>
+          <select id="cursoDocente"></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalCurso">Cancelar</button>
+        <button class="btn btn-success" id="btnSaveCurso">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Añadir Estudiante -->
+  <div class="modal-overlay" id="modalEstudiante">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>Añadir estudiante</h2>
+          <p class="subtitle">Registra un nuevo estudiante en el curso.</p>
+        </div>
+        <button class="modal-close" data-close="modalEstudiante">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; margin-bottom:12px;">
+          <div style="min-width:100px;">
+            <label for="estNumLista">N° de lista</label>
+            <input type="number" id="estNumLista" placeholder="01" min="1" />
+          </div>
+          <div>
+            <label for="estNombre">Nombre completo</label>
+            <input type="text" id="estNombre" placeholder="Nombre y apellidos" />
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label for="estCurso">Curso</label>
+          <select id="estCurso"></select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalEstudiante">Cancelar</button>
+        <button class="btn btn-success" id="btnSaveEstudiante">+ Agregar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Estudiante -->
+  <div class="modal-overlay" id="modalEditarEst">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h2>Editar información del estudiante</h2>
+          <p class="subtitle">Actualiza los datos del estudiante.</p>
+        </div>
+        <button class="modal-close" data-close="modalEditarEst">×</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid; grid-template-columns:auto 1fr; gap:12px; margin-bottom:12px;">
+          <div style="min-width:100px;">
+            <label for="editNumLista">N° de lista</label>
+            <input type="number" id="editNumLista" min="1" />
+          </div>
+          <div>
+            <label for="editNombre">Nombre completo</label>
+            <input type="text" id="editNombre" />
+          </div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label for="editCurso">Curso</label>
+          <select id="editCurso"></select>
+        </div>
+        <div style="background:rgba(192,57,43,0.08); border:1px solid rgba(192,57,43,0.3); border-radius:10px; padding:14px;">
+          <strong style="color:var(--danger);">Eliminar estudiante</strong>
+          <p style="font-size:0.85rem; color:var(--danger); margin:6px 0 12px;">
+            Esta acción retirará al estudiante del curso y de la lista activa.
+          </p>
+          <button class="btn btn-danger" id="btnEliminarEstudiante">✕ Eliminar estudiante</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close="modalEditarEst">Cancelar</button>
+        <button class="btn btn-success" id="btnSaveEdit">✓ Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/docente.js"></script>
+</body>
+</html>

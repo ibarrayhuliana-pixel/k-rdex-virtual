@@ -13,7 +13,7 @@
     "seed": "node prisma/seed.js"
   },
   "engines": {
-    "node": "18.x"
+    "node": "26.x"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
